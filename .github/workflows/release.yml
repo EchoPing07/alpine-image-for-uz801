@@ -4,6 +4,9 @@ on:
   release:
     types: [published]
 
+permissions:
+  contents: write
+
 jobs:
   build-packages:
     runs-on: ubuntu-latest
@@ -38,22 +41,10 @@ jobs:
           cp fsc.bin fsg.bin modem.bin modemst1.bin modemst2.bin persist.bin sec.bin "$PKG/"
           zip -r "$PKG.zip" "$PKG"
 
-      - name: Upload Linux package
-        uses: actions/upload-release-asset@v1
+      - name: Upload packages to release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: alpine-uz801-linux-${{ steps.time.outputs.ts }}.zip
-          asset_name: alpine-uz801-linux-${{ steps.time.outputs.ts }}.zip
-          asset_content_type: application/zip
-
-      - name: Upload Windows package
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: alpine-uz801-windows-${{ steps.time.outputs.ts }}.zip
-          asset_name: alpine-uz801-windows-${{ steps.time.outputs.ts }}.zip
-          asset_content_type: application/zip
+        run: |
+          gh release upload "${{ github.event.release.tag_name }}" \
+            "alpine-uz801-linux-${{ steps.time.outputs.ts }}.zip" \
+            "alpine-uz801-windows-${{ steps.time.outputs.ts }}.zip"
