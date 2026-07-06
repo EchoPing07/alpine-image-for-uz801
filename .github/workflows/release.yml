@@ -35,6 +35,7 @@ jobs:
           PKG="alpine-uz801-windows-${{ steps.time.outputs.ts }}"
           mkdir -p "$PKG"
           cp README.md "一键刷入.bat" "$PKG/"
+          sed -i 's/$/\r/' "$PKG/一键刷入.bat"
           cp adb.exe fastboot.exe AdbWinApi.dll AdbWinUsbApi.dll "$PKG/"
           cp aboot.mbn hyp.mbn rpm.mbn sbl1.mbn tz.mbn "$PKG/"
           cp boot.bin alpine_rootfs.bin gpt_both0.bin "$PKG/"
